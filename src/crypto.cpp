@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
-//                                                                             
-//  Copyright (C) 2008-2012  Artyom Beilis (Tonkikh) <artyomtnk@yahoo.com>     
-//                                                                             
+//
+//  Copyright (C) 2008-2012  Artyom Beilis (Tonkikh) <artyomtnk@yahoo.com>
+//
 //  See accompanying file COPYING.TXT file for licensing details.
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -12,6 +12,7 @@
 #  include <gcrypt.h>
 #endif
 #ifdef CPPCMS_HAVE_OPENSSL
+#  define OPENSSL_API_COMPAT 0x10000000L
 #  include <openssl/sha.h>
 #endif
 #include <vector>
@@ -39,7 +40,7 @@ namespace crypto {
 			{
 				return 64;
 			}
-			virtual void append(void const *ptr,size_t size) 
+			virtual void append(void const *ptr,size_t size)
 			{
 				impl::md5_append(&state_,reinterpret_cast<impl::md5_byte_t const *>(ptr),size);
 			}
@@ -77,7 +78,7 @@ namespace crypto {
 			{
 				return 64;
 			}
-			virtual void append(void const *ptr,size_t size) 
+			virtual void append(void const *ptr,size_t size)
 			{
 				state_.process_bytes(ptr,size);
 			}
@@ -105,7 +106,8 @@ namespace crypto {
 			}
 			virtual ~sha1_digets()
 			{
-				memset(&state_,0,sizeof(state_));
+				//memset(&state_,0,sizeof(state_));
+				//BMA 2023/09/08: na xuya ^^^ eto ^^^  delat`-to ???
 			}
 		private:
 			impl::sha1 state_;
@@ -131,7 +133,7 @@ namespace crypto {
 				else
 					return 64;
 			}
-			virtual void append(void const *ptr,size_t size) 
+			virtual void append(void const *ptr,size_t size)
 			{
 				gcry_md_write(state_,ptr,size);
 			}
@@ -172,7 +174,7 @@ namespace crypto {
 		#endif
 
 		#ifdef CPPCMS_HAVE_OPENSSL
-		
+
 		#define CPPCMS_SSL_MD(len,base_len)				\
 		class ssl_sha##len : public message_digest {			\
 		public:								\
@@ -227,7 +229,7 @@ namespace crypto {
 		#endif
 
 	} // anon
-	
+
 	std::unique_ptr<message_digest> message_digest::md5()
 	{
 		std::unique_ptr<message_digest> d(new md5_digets());
@@ -272,14 +274,14 @@ namespace crypto {
 		else if(name == "sha512")
 			d.reset(new ssl_sha512());
 		#endif
-		
+
 		return d;
 	}
 
 	key::key() : data_(0), size_(0)
 	{
 	}
-	
+
 	key::key(key const &other) : data_(0),size_(0)
 	{
 		set(other.data(),other.size());
@@ -308,10 +310,10 @@ namespace crypto {
 	{
 		set_hex(s.c_str(),s.size());
 	}
-	
+
 	unsigned key::from_hex(char c)
 	{
-		if('0' <= c && c<='9') 
+		if('0' <= c && c<='9')
 			return c-'0';
 		if('a' <= c && c<='f')
 			return c-'a' + 10;
@@ -326,7 +328,7 @@ namespace crypto {
 		FILE *f = 0;
 		char *buf = 0;
 		size_t buf_size = 0;
-		
+
 		try {
 			f = booster::nowide::fopen(file_name.c_str(),"rb");
 			if(!f) {
@@ -359,7 +361,7 @@ namespace crypto {
 			set_hex(buf,real_size);
 		}
 		catch(...) {
-			if(f) { 
+			if(f) {
 				fclose(f);
 				f=0;
 			}

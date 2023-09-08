@@ -69,7 +69,7 @@ namespace util {
             };
             return days[is_leap(year)][month-1] + day - 1;
         }
-        
+
         std::time_t internal_timegm(std::tm const *t)
         {
             int year = t->tm_year + 1900;
@@ -87,10 +87,10 @@ namespace util {
             int day = t->tm_mday;
             int day_of_year = days_from_1jan(year,month,day);
             int days_since_epoch = days_from_1970(year) + day_of_year;
-            
+
             std::time_t seconds_in_day = 3600 * 24;
             std::time_t result =  seconds_in_day * days_since_epoch + 3600 * t->tm_hour + 60 * t->tm_min + t->tm_sec;
-            
+
             return result;
         }
 
@@ -107,7 +107,7 @@ namespace util {
         {
             return strcmp(left,right) < 0;
         }
-        
+
         //
         // Ref: CLDR 1.9 common/supplemental/supplementalData.xml
         //
@@ -127,7 +127,7 @@ namespace util {
                 "AR","AS","AZ","BW","CA","CN","FO","GE","GL","GU",
                 "HK","IL","IN","JM","JP","KG","KR","LA","MH","MN",
                 "MO","MP","MT","NZ","PH","PK","SG","TH","TT","TW",
-                "UM","US","UZ","VI","ZW" 
+                "UM","US","UZ","VI","ZW"
             };
             if(strcmp(terr,"MV") == 0)
                 return 5; // fri
@@ -142,7 +142,7 @@ namespace util {
 
     class gregorian_calendar : public abstract_calendar {
     public:
-            
+
             gregorian_calendar(std::string const &terr)
             {
                 first_day_of_week_ = first_day_of_week(terr.c_str());
@@ -151,7 +151,7 @@ namespace util {
                 tzoff_ = 0;
                 from_time(time_);
             }
-                
+
             ///
             /// Make a polymorphic copy of the calendar
             ///
@@ -163,7 +163,7 @@ namespace util {
             ///
             /// Set specific \a value for period \a p, note not all values are settable.
             ///
-            virtual void set_value(period::marks::period_mark p,int value) 
+            virtual void set_value(period::marks::period_mark p,int value)
             {
                 using namespace period::marks;
                 switch(p) {
@@ -199,11 +199,12 @@ namespace util {
                     tm_updated_.tm_mday += (value - (tm_updated_.tm_yday + 1));
                     break;
                 case day_of_week:           ///< Day of week, starting from Sunday, [1..7]
-                    if(value < 1) // make sure it is positive 
+                    if(value < 1) // make sure it is positive
                         value += (-value / 7) * 7 + 7;
                     // convert to local DOW
                     value = (value - 1 - first_day_of_week_ + 14) % 7 + 1;
                     // fall throght
+                    [[fallthrough]];
                 case day_of_week_local:     ///< Local day of week, for example in France Monday is 1, in US Sunday is 1, [1..7]
                     normalize();
                     tm_updated_.tm_mday += (value - 1) - (tm_updated_.tm_wday - first_day_of_week_ + 7) % 7;
@@ -258,9 +259,9 @@ namespace util {
                         if(!gmtime_r(&point,&val))
                             throw date_time_error("boost::locale::gregorian_calendar invalid time");
                         #endif
-                        
+
                     }
-                    
+
                     time_ = point - tzoff_;
                     tm_ = val;
                     tm_updated_ = val;
@@ -280,7 +281,7 @@ namespace util {
                 // Alaways use local week start
                 int current_dow = (wday - first_day_of_week_ + 7) % 7;
                 // Calculate local week day of Jan 1st.
-                int first_week_day = (current_dow + 700 - day) % 7; 
+                int first_week_day = (current_dow + 700 - day) % 7;
                     // adding something big devidable by 7
 
                 int start_of_period_in_weeks;
@@ -299,7 +300,7 @@ namespace util {
             ///
             /// Get specific value for period \a p according to a value_type \a v
             ///
-            virtual int get_value(period::marks::period_mark p,value_type v) const 
+            virtual int get_value(period::marks::period_mark p,value_type v) const
             {
                 using namespace period::marks;
                 switch(p) {
@@ -317,7 +318,7 @@ namespace util {
                         if(sizeof(std::time_t) == 4)
                             return 1901; // minimal year with 32 bit time_t
                         else
-                            return 1; 
+                            return 1;
                         #endif
                     case absolute_maximum:
                     case least_maximum:
@@ -476,7 +477,7 @@ namespace util {
                     break;
                 case period::marks::first_day_of_week:          ///< For example Sunday in US, Monday in France
                     return first_day_of_week_ + 1;
-                
+
                 case week_of_year:               ///< The week number in the year
                     switch(v) {
                     case absolute_minimum:
@@ -502,6 +503,7 @@ namespace util {
                             return val;
                         }
                     }
+                    [[fallthrough]];
                 case week_of_month:              ///< The week number withing current month
                     switch(v) {
                     case absolute_minimum:
@@ -526,7 +528,7 @@ namespace util {
                             return val;
                         }
                     }
-
+                    [[fallthrough]];
                 case day_of_week_in_month:       ///< Original number of the day of the week in month.
                     switch(v) {
                     case absolute_minimum:
@@ -553,7 +555,7 @@ namespace util {
                     ;
                 }
                 return 0;
- 
+
             }
 
             ///
@@ -563,7 +565,7 @@ namespace util {
             {
                 from_time(static_cast<std::time_t>(p.seconds));
             }
-            virtual posix_time get_time() const  
+            virtual posix_time get_time() const
             {
                 posix_time pt = { time_, 0};
                 return pt;
@@ -586,7 +588,7 @@ namespace util {
             ///
             /// Get option for calendar, currently only check if it is Gregorian calendar
             ///
-            virtual int get_option(calendar_option_type opt) const 
+            virtual int get_option(calendar_option_type opt) const
             {
                 switch(opt) {
                 case is_gregorian:
@@ -690,7 +692,7 @@ namespace util {
             ///
             /// Calculate the difference between this calendar  and \a other in \a p units
             ///
-            virtual int difference(abstract_calendar const *other_cal,period::marks::period_mark p) const 
+            virtual int difference(abstract_calendar const *other_cal,period::marks::period_mark p) const
             {
                 std::unique_ptr<gregorian_calendar> keeper;
                 gregorian_calendar const *other = dynamic_cast<gregorian_calendar const *>(other_cal);
@@ -714,7 +716,7 @@ namespace util {
                     }
                 case month:
                     {
-                        int diff = 12 * (other->tm_.tm_year - tm_.tm_year) 
+                        int diff = 12 * (other->tm_.tm_year - tm_.tm_year)
                                     + other->tm_.tm_mon - tm_.tm_mon;
                         return get_diff(period::marks::month,diff,other);
                     }
@@ -722,7 +724,8 @@ namespace util {
                 case week_of_month:
                 case week_of_year:
                     factor = 7;
-                    // fall 
+                    // fall
+                    [[fallthrough]];
                 case day:
                 case day_of_year:
                 case day_of_week:
@@ -770,13 +773,13 @@ namespace util {
                 return time_zone_name_;
             }
 
-            virtual bool same(abstract_calendar const *other) const 
+            virtual bool same(abstract_calendar const *other) const
             {
                 gregorian_calendar const *gcal = dynamic_cast<gregorian_calendar const *>(other);
                 if(!gcal)
                     return false;
-                return 
-                    gcal->tzoff_ == tzoff_ 
+                return
+                    gcal->tzoff_ == tzoff_
                     && gcal->is_local_ == is_local_
                     && gcal->first_day_of_week_  == first_day_of_week_;
             }
@@ -814,9 +817,9 @@ namespace util {
         bool is_local_;
         int tzoff_;
         std::string time_zone_name_;
-        
+
     };
-    
+
     abstract_calendar *create_gregorian_calendar(std::string const &terr)
     {
         return new gregorian_calendar(terr);
@@ -824,19 +827,19 @@ namespace util {
 
     class gregorian_facet : public calendar_facet {
     public:
-        gregorian_facet(std::string const &terr,size_t refs = 0) : 
+        gregorian_facet(std::string const &terr,size_t refs = 0) :
             calendar_facet(refs),
             terr_(terr)
         {
         }
-        virtual abstract_calendar *create_calendar() const 
+        virtual abstract_calendar *create_calendar() const
         {
             return create_gregorian_calendar(terr_);
         }
     private:
         std::string terr_;
     };
-    
+
     std::locale install_gregorian_calendar(std::locale const &in,std::string const &terr)
     {
         return std::locale(in,new gregorian_facet(terr));
@@ -844,7 +847,7 @@ namespace util {
 
 
 } // util
-} // locale 
+} // locale
 } //boost
 
 

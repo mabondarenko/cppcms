@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
-//                                                                             
-//  Copyright (C) 2008-2012  Artyom Beilis (Tonkikh) <artyomtnk@yahoo.com>     
-//                                                                             
+//
+//  Copyright (C) 2008-2012  Artyom Beilis (Tonkikh) <artyomtnk@yahoo.com>
+//
 //  See accompanying file COPYING.TXT file for licensing details.
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -47,19 +47,22 @@ public:
 		}
 		return r;
 	}
-	
+
 	void do_abort(int code)
 	{
 		int how=atoi(request().get("how").c_str());
 		switch(how){
 		case 3:
 			response().setbuf(0);
+			[[fallthrough]];
 		case 2:
 			response().full_asynchronous_buffering(false);
+			[[fallthrough]];
 		case 1:
 			response().status(code);
 			response().set_plain_text_header();
 			response().out() << "at="<<request().get("abort");
+			[[fallthrough]];
 		case 0:
 			throw cppcms::http::abort_upload(code);
 		}
@@ -95,7 +98,7 @@ public:
 		return context().get_specific<test_data>();
 	}
 
-	void on_new_file(cppcms::http::file &input_file) 
+	void on_new_file(cppcms::http::file &input_file)
 	{
 		data()->on_new_file++;
 		TESTNT(input_file.size() == 0);
@@ -149,7 +152,7 @@ public:
 		TESTNT(request().get("fail")=="1");
 		total_on_error++;
 	}
-	
+
 	void main(std::string path)
 	{
 		if(path=="/total_on_error") {
@@ -175,9 +178,9 @@ public:
 				do_abort(501);
 			request().set_content_filter(*this);
 			std::string cl_limit,mp_limit;
-			if((cl_limit=request().get("cl_limit"))!="") 
+			if((cl_limit=request().get("cl_limit"))!="")
 				request().limits().content_length_limit(atoi(cl_limit.c_str()));
-			if((mp_limit=request().get("mp_limit"))!="") 
+			if((mp_limit=request().get("mp_limit"))!="")
 				request().limits().multipart_form_data_limit(atoi(mp_limit.c_str()));
 		}
 		else {
@@ -200,7 +203,7 @@ public:
 			;
 
 		}
-				
+
 	}
 };
 
@@ -251,7 +254,7 @@ public:
 		TESTNT(request().get("fail")=="1");
 		total_on_error++;
 	}
-	
+
 	void main(std::string path)
 	{
 		if(path=="/total_on_error") {
@@ -277,9 +280,9 @@ public:
 				do_abort(501);
 			request().set_content_filter(*this);
 			std::string cl_limit,mp_limit;
-			if((cl_limit=request().get("cl_limit"))!="") 
+			if((cl_limit=request().get("cl_limit"))!="")
 				request().limits().content_length_limit(atoi(cl_limit.c_str()));
-			if((mp_limit=request().get("mp_limit"))!="") 
+			if((mp_limit=request().get("mp_limit"))!="")
 				request().limits().multipart_form_data_limit(atoi(mp_limit.c_str()));
 		}
 		else {
@@ -299,7 +302,7 @@ public:
 			td->write(response().out());
 
 		}
-				
+
 	}
 };
 
@@ -314,12 +317,12 @@ int main(int argc,char **argv)
 		srv.applications_pool().mount(	cppcms::create_pool<file_test>(),
 						mount_point("/upload"),
 						cppcms::app::asynchronous | cppcms::app::content_filter);
-		
+
 		srv.applications_pool().mount(	cppcms::create_pool<raw_test>(),
 						mount_point("/raw"),
 						cppcms::app::asynchronous | cppcms::app::content_filter);
 
-		
+
 		srv.after_fork(submitter(srv));
 		srv.run();
 	}

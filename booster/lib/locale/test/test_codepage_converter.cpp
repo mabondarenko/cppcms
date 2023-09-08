@@ -69,7 +69,7 @@ bool test_from(booster::locale::util::base_converter &cvt,unsigned codepoint,cha
 
 bool test_incomplete(booster::locale::util::base_converter &cvt,unsigned codepoint,int len)
 {
-    char buf[32];
+    char buf[32]={0};
     unsigned res = cvt.from_unicode(codepoint,buf,buf+len);
     return res == incomplete;
 }
@@ -96,14 +96,14 @@ void test_shiftjis(std::unique_ptr<booster::locale::util::base_converter> cvt)
         TEST_FROM("\x82\xd0",0x3072); // Full width hiragana Hi ひ
 
         std::cout << "- Illegal/incomplete" << std::endl;
-        
+
         TEST_TO("\xa0",illegal);
         TEST_TO("\x82",incomplete);
         TEST_TO("\x83\xf0",illegal);
 
         TEST_INC(0x30d2,1); // Full width katakana Hi ヒ
         TEST_INC(0x3072,1); // Full width hiragana Hi ひ
-        
+
         TEST_FROM(0,0x5e9); // Hebrew ש not in ShiftJIS
 }
 
@@ -168,7 +168,7 @@ int main()
 
         TEST_TO(make4(0x110000),illegal);
         TEST_TO(make4(0x1fffff),illegal);
-        
+
         TEST_TO(make2(0),illegal);
         TEST_TO(make3(0),illegal);
         TEST_TO(make4(0),illegal);
@@ -183,9 +183,9 @@ int main()
 
         TEST_TO(make4(0x8000),illegal);
         TEST_TO(make4(0xffff),illegal);
-        
+
         std::cout << "-- Invalid surrogate" << std::endl;
-        
+
         TEST_TO(make3(0xD800),illegal);
         TEST_TO(make3(0xDBFF),illegal);
         TEST_TO(make3(0xDC00),illegal);
@@ -200,7 +200,7 @@ int main()
 
         TEST_TO("\x80",illegal);
         TEST_TO("\xC2",incomplete);
-        
+
         TEST_TO("\xdf",incomplete);
 
         TEST_TO("\xe0",incomplete);
@@ -234,16 +234,16 @@ int main()
         TEST_INC(0x10000,1);
         TEST_FROM("\xf0\x90\x80\x80",0x10000);
         TEST_FROM("\xf4\x8f\xbf\xbf",0x10FFFF);
-       
+
         std::cout << "-- Test no surrogate " << std::endl;
-         
+
         TEST_FROM(0,0xD800);
         TEST_FROM(0,0xDBFF);
         TEST_FROM(0,0xDC00);
         TEST_FROM(0,0xDFFF);
-        
+
         std::cout << "-- Test invalid " << std::endl;
-        
+
         TEST_FROM(0,0x110000);
         TEST_FROM(0,0x1FFFFF);
 
@@ -305,4 +305,4 @@ int main()
 }
 
 // vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
-// boostinspect:noascii 
+// boostinspect:noascii

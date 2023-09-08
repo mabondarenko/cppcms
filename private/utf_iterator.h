@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
-//                                                                             
-//  Copyright (C) 2008-2012  Artyom Beilis (Tonkikh) <artyomtnk@yahoo.com>     
-//                                                                             
+//
+//  Copyright (C) 2008-2012  Artyom Beilis (Tonkikh) <artyomtnk@yahoo.com>
+//
 //  See accompanying file COPYING.TXT file for licensing details.
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ namespace utf8 {
             unsigned char c=ci;
             return (c & 0xC0)==0x80;
         }
-	inline int trail_length(unsigned char c) 
+	inline int trail_length(unsigned char c)
         {
             if(c < 128)
                 return 0;
@@ -99,6 +99,7 @@ namespace utf8 {
 				if (!is_trail(tmp))
 					return illegal;
 				c = (c << 6) | ( tmp & 0x3F);
+				[[fallthrough]];
 			case 2:
 				if(p==e)
 					return illegal;
@@ -106,6 +107,7 @@ namespace utf8 {
 				if (!is_trail(tmp))
 					return illegal;
 				c = (c << 6) | ( tmp & 0x3F);
+				[[fallthrough]];
 			case 1:
 				if(p==e)
 					return illegal;
@@ -123,7 +125,7 @@ namespace utf8 {
 		// make sure it is the most compact representation
 		if(width(c)!=trail_size + 1)
 			return illegal;
-		
+
 		if(html && c<0xA0)
 			return illegal;
 		return c;
@@ -140,11 +142,11 @@ namespace utf8 {
 		}
 		return true;
 	}
-	
+
 	template<typename Iterator>
 	bool validate(Iterator p,Iterator e,bool html=false)
 	{
-		while(p!=e) 
+		while(p!=e)
 			if(next(p,e,html)==utf::illegal)
 				return false;
 		return true;

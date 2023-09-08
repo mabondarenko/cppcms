@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
-//                                                                             
-//  Copyright (C) 2008-2012  Artyom Beilis (Tonkikh) <artyomtnk@yahoo.com>     
-//                                                                             
+//
+//  Copyright (C) 2008-2012  Artyom Beilis (Tonkikh) <artyomtnk@yahoo.com>
+//
 //  See accompanying file COPYING.TXT file for licensing details.
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -14,6 +14,7 @@
 
 
 #if defined(CPPCMS_HAVE_OPENSSL)
+	#define OPENSSL_API_COMPAT 0x10000000L
 	#include <openssl/aes.h>
 	#define CPPCMS_HAVE_AES
 #endif
@@ -76,7 +77,7 @@
 				}
 			}
 
-			static struct gcry_thread_cbs threads_nt = { 
+			static struct gcry_thread_cbs threads_nt = {
 				GCRY_THREAD_OPTION_USER,
 				0,
 				nt_mutex_init,
@@ -84,7 +85,7 @@
 				nt_mutex_lock,
 				nt_mutex_unlock,
 				0,0,0,0,
-				0,0,0,0 
+				0,0,0,0
 			};
 
 			static void set_gcrypt_cbs()
@@ -92,7 +93,7 @@
 				gcry_control (GCRYCTL_SET_THREAD_CBS, &threads_nt);
 			}
 		} // extern "C"
-						
+
 	#else // pthreads
 
 		#include <pthread.h>
@@ -101,7 +102,7 @@
 		extern "C" {
 
 			GCRY_THREAD_OPTION_PTHREAD_IMPL;
-			
+
 			static void set_gcrypt_cbs()
 			{
 				gcry_control (GCRYCTL_SET_THREAD_CBS, &gcry_threads_pthread);
@@ -132,7 +133,7 @@ namespace crypto {
 
 	class gcrypt_aes_encryptor : public cbc {
 	public:
-		gcrypt_aes_encryptor(unsigned type) : 
+		gcrypt_aes_encryptor(unsigned type) :
 			enc_(0),
 			dec_(0),
 			iv_initialized_(false)
@@ -412,5 +413,3 @@ std::unique_ptr<cbc> cbc::create(cbc::cbc_type type)
 
 } // crypto
 } //cppcms
-
-
