@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
-//                                                                             
-//  Copyright (C) 2008-2012  Artyom Beilis (Tonkikh) <artyomtnk@yahoo.com>     
-//                                                                             
+//
+//  Copyright (C) 2008-2012  Artyom Beilis (Tonkikh) <artyomtnk@yahoo.com>
+//
 //  See accompanying file COPYING.TXT file for licensing details.
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -133,7 +133,7 @@ inline bool directory::open(std::string const &dir_name)
 	//
 	// This pathconf/opendir exploit can be used with only file systems
 	// with small file names like fat... So we require
-	// at least 4K so it would be impossible to exploit 
+	// at least 4K so it would be impossible to exploit
 	// this
 	//
 	int name_len = pathconf(dir_name.c_str(),_PC_NAME_MAX);
@@ -165,6 +165,8 @@ inline void directory::close()
 	}
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 inline bool directory::next()
 {
 	assert(dir_);
@@ -175,6 +177,7 @@ inline bool directory::next()
 	#endif
 	return readdir_r(dir_,d,&entry_p_) == 0 && entry_p_ != 0;
 }
+#pragma GCC diagnostic pop
 
 inline char const *directory::name()
 {

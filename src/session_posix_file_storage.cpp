@@ -1,7 +1,7 @@
 ///////////////////////////////////////////////////////////////////////////////
-//                                                                             
-//  Copyright (C) 2008-2012  Artyom Beilis (Tonkikh) <artyomtnk@yahoo.com>     
-//                                                                             
+//
+//  Copyright (C) 2008-2012  Artyom Beilis (Tonkikh) <artyomtnk@yahoo.com>
+//
 //  See accompanying file COPYING.TXT file for licensing details.
 //
 ///////////////////////////////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ session_file_storage::session_file_storage(std::string path,int concurrency_hint
 			throw cppcms_error(err,"Failed to create a directory for session storage " + path_);
 		}
 	}
-		
+
 	lock_size_ = concurrency_hint;
 	if(force_flock || (procs_no > 1 && !test_pthread_mutex_pshared()))
 		file_lock_=true;
@@ -102,7 +102,7 @@ pthread_mutex_t *session_file_storage::sid_to_pos(std::string const &sid)
 	char buf[5] = { sid[0],sid[1],sid[2],sid[3],0};
 	unsigned pos;
 	sscanf(buf,"%x",&pos);
-	return locks_ + (pos % lock_size_); 
+	return locks_ + (pos % lock_size_);
 }
 
 void session_file_storage::lock(std::string const &sid)
@@ -237,7 +237,7 @@ bool session_file_storage::read_timestamp(int fd)
 
 bool session_file_storage::is_blocking()
 {
-	return file_lock_; 
+	return file_lock_;
 }
 
 bool session_file_storage::read_from_file(int fd,time_t &timeout,std::string &data)
@@ -312,12 +312,14 @@ bool session_file_storage::read_all(int fd,void *vbuf,int n)
 	return true;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 void session_file_storage::gc()
 {
 	DIR *d=0;
 	struct dirent *entry_st=0,*entry_p;
 	int path_len=pathconf(path_.c_str(),_PC_NAME_MAX);
-	if(path_len < 0 ) { 
+	if(path_len < 0 ) {
 		// Only "sessions" should be in this directory
 		// also this directory has high level of trust
 		// thus... Don't care about symlink exploits
@@ -329,20 +331,21 @@ void session_file_storage::gc()
 		path_len=4096; // guess
 		#endif
 	}
-	// this is for Solaris... 
+	// this is for Solaris...
 	entry_st=(struct dirent *)new char[sizeof(struct dirent)+path_len+1];
 	try{
 		if((d=::opendir(path_.c_str()))==NULL) {
 			int err=errno;
 			throw cppcms_error(err,"Failed to open directory :"+path_);
 		}
+
 		while(::readdir_r(d,entry_st,&entry_p)==0 && entry_p!=NULL) {
 			int i;
 			for(i=0;i<32;i++) {
 				if(!isxdigit(entry_st->d_name[i]))
 					break;
 			}
-			if(i!=32 || entry_st->d_name[i]!=0) 
+			if(i!=32 || entry_st->d_name[i]!=0)
 				continue;
 			std::string sid=entry_st->d_name;
 			{
@@ -360,6 +363,7 @@ void session_file_storage::gc()
 	}
 	delete [] entry_st;
 }
+#pragma GCC diagnostic pop
 
 struct session_file_storage_factory::_data {};
 
