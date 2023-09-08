@@ -35,7 +35,7 @@ if(NOT LIBDIR)
 endif()
 
 
-option(DISABLE_SHARED		"Disable shared libraries build" OFF)
+option(DISABLE_SHARED		"Disable shared libraries build" ON)
 option(DISABLE_STATIC		"Disable static libraries build" OFF)
 option(DISABLE_GCRYPT		"Disable usage of gcrypt library" OFF)
 option(DISABLE_OPENSSL		"Disable usage of openssl library" OFF)
@@ -109,7 +109,7 @@ endif()
 
 if(CMAKE_COMPILER_IS_GNUCXX)
 
-	set(CXX_FLAGS "-Wall -Wextra -std=c++11")
+	set(CXX_FLAGS "-Wall -Wextra -std=c++17")
 	set(C_FLAGS "-Wall -Wextra")
 
 	if(CMAKE_SYSTEM_NAME STREQUAL "SunOS")
@@ -126,13 +126,13 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 	endif()
 
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-	set(CXX_FLAGS "-Wall -Wextra -std=c++11")
+	set(CXX_FLAGS "-Wall -Wextra -std=c++17")
 	if(CMAKE_SYSTEM_NAME STREQUAL "FreeBSD")
 		set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} -rdynamic")
 	endif()
 
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
-	set(CXX_FLAGS "-Wall -std=c++11")
+	set(CXX_FLAGS "-Wall -std=c++17")
 	set(C_FLAGS "-Wall")
 elseif(MSVC) 
     # To be defined MSVC 2017 supports c++14 by default so no need to specify
@@ -404,11 +404,11 @@ endif()
 
 if(NOT DISABLE_OPENSSL)
 	find_path(OPENSSL_INCLUDE_DIR openssl/aes.h)
-	find_library(LIB_OPENSSL NAMES crypto libcrypto libeay32)
+	find_library(LIB_OPENSSL_CRYPTO NAMES crypto libcrypto libeay32)
 endif()
 
-if (OPENSSL_INCLUDE_DIR AND LIB_OPENSSL)
-	set(LIB_CRYPT ${LIB_OPENSSL})
+if (OPENSSL_INCLUDE_DIR AND LIB_OPENSSL_CRYPTO)
+	set(LIB_CRYPT ${LIB_OPENSSL_CRYPTO})
 	set(CPPCMS_HAVE_OPENSSL 1)
 	include_directories(${OPENSSL_INCLUDE_DIR})
 elseif(GCRYPT_INCLUDE_DIR AND LIB_GCRYPT)
