@@ -6,7 +6,7 @@
 #  http://www.boost.org/LICENSE_1_0.txt)
 #
 
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.2)
 project(booster)
 include(CheckFunctionExists)
 include(CheckCXXSourceCompiles)
@@ -83,7 +83,7 @@ else()
 	option(DISABLE_POSIX_LOCALE	"Disable POSIX locale backend" ON)
 endif()
 
-if(IS_WINDOWS) 
+if(IS_WINDOWS)
 	option(DISABLE_WINAPI_LOCALE	"Disable Win32API locale backend" OFF)
 else()
 	option(DISABLE_WINAPI_LOCALE	"Disable Win32API locale backend" ON)
@@ -110,7 +110,7 @@ if(USE_LIBCXX)
 endif()
 
 
-if(USE_STLPORT) 
+if(USE_STLPORT)
 	find_path(STLPORT_INCLUDE stlport/iostream)
 	find_library(STLPORT_LIB stlport)
 	if(NOT STLPORT_INCLUDE OR NOT STLPORT_LIB)
@@ -152,9 +152,9 @@ endif()
 
 # Checking for iconv
 
-if(NOT DISABLE_ICONV) 
+if(NOT DISABLE_ICONV)
 	check_cxx_source_compiles(
-		"#include <iconv.h> 
+		"#include <iconv.h>
 		 int main() { iconv_t v=iconv_open((char *)0,(char *)0); }"
 		 LIBC_ICONV)
 	if(NOT LIBC_ICONV)
@@ -177,15 +177,15 @@ else()
 	add_definitions(-DBOOSTER_LOCALE_NO_ICONV)
 endif(NOT DISABLE_ICONV)
 
-if(DISABLE_STD_LOCALE) 
+if(DISABLE_STD_LOCALE)
 	add_definitions(-DBOOSTER_LOCALE_NO_STD_BACKEND)
 endif()
 
-if(DISABLE_POSIX_LOCALE) 
+if(DISABLE_POSIX_LOCALE)
 	add_definitions(-DBOOSTER_LOCALE_NO_POSIX_BACKEND)
 endif()
 
-if(DISABLE_WINAPI_LOCALE) 
+if(DISABLE_WINAPI_LOCALE)
 	add_definitions(-DBOOSTER_LOCALE_NO_WINAPI_BACKEND)
 endif()
 
@@ -282,13 +282,13 @@ check_cxx_source_compiles(
 	int main() { std::atomic_long v(0); v++; v--; return int(v); }"
 	BOOSTER_HAVE_STD_ATOMIC)
 
-if(NOT BOOSTER_HAVE_STD_ATOMIC) 
+if(NOT BOOSTER_HAVE_STD_ATOMIC)
 	set(CMAKE_REQUIRED_LIBRARIES atomic)
 	check_cxx_source_compiles(
 		"#include <atomic>
 		int main() { std::atomic_long v(0); v++; v--; return int(v); }"
 		BOOSTER_HAVE_STD_ATOMIC_LIB)
-	if(NOT BOOSTER_HAVE_STD_ATOMIC_LIB) 
+	if(NOT BOOSTER_HAVE_STD_ATOMIC_LIB)
 		message(FATAL_ERROR "No std::atomic_long support, even with -latomic")
 	endif()
 endif()
@@ -308,9 +308,9 @@ check_cxx_source_compiles(
 	 #include <typeinfo>
 	 #include <new>
 	 #ifdef __GNUC__
-	 #include <cxxabi.h> 
+	 #include <cxxabi.h>
 	 #endif
-	 
+
 	  extern \"C\" {
 	   extern void* _Unwind_GetIP (void *);
 	   extern int _Unwind_Backtrace(int (*)(void *,void *),void *);
@@ -328,9 +328,9 @@ check_cxx_source_compiles(
 	 #include <typeinfo>
 	 #include <new>
 	 #ifdef __GNUC__
-	 #include <cxxabi.h> 
+	 #include <cxxabi.h>
 	 #endif
-	 
+
 	 extern \"C\" {
 	   extern int _Unwind_Backtrace(int (*)(void *,void *),void *);
 	 }
@@ -373,7 +373,7 @@ endif()
 
 
 
-set(BOOSTER_SRC	
+set(BOOSTER_SRC
 	lib/ptime/src/posix_time.cpp
 	lib/ptime/src/ctime.cpp
 	lib/smart_ptr/src/atomic_counter.cpp
@@ -463,7 +463,7 @@ endif()
 if(USE_WINDOWS6_API)
 	check_cxx_source_compiles(
 		"
-		#ifndef _WIN32_WINNT 
+		#ifndef _WIN32_WINNT
 		#define _WIN32_WINNT 0x600
 		#endif
 		#include <windows.h>
@@ -525,7 +525,7 @@ if(DISABLE_PCRE)
 else()
 	set(BOOSTER_SRC ${BOOSTER_SRC} lib/regex/src/pcre_regex.cpp)
 endif()
-	
+
 
 set(LINK_LIBS )
 
@@ -539,7 +539,7 @@ if(NOT DISABLE_SHARED)
 	set_target_properties(booster PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 	set_target_properties(booster PROPERTIES OUTPUT_NAME "booster${BOOSTER_SUFFIX}")
 
-endif(NOT DISABLE_SHARED)	
+endif(NOT DISABLE_SHARED)
 
 if(NOT DISABLE_STATIC)
 	add_library(booster-static STATIC ${BOOSTER_SRC})
@@ -601,19 +601,19 @@ foreach(ALIB ${LINK_LIBS})
   	if(IS_WINDOWS)
 		target_link_libraries(${ALIB} psapi)
 	endif()
-	
+
 	if(STLPORT_LIB)
 		target_link_libraries(${ALIB} ${STLPORT_LIB} supc++)
 	endif()
 
 
-    
+
 	if(${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION} GREATER 2.6)
 		set_target_properties(${ALIB} PROPERTIES PUBLIC_HEADER "${CMAKE_CURRENT_BINARY_DIR}/booster/build_config.h")
 	else()
 		set_target_properties(${ALIB} PROPERTIES PUBLIC_HEADER "${CMAKE_BINARY_DIR}/booster/build_config.h")
 	endif()
-	
+
 	if(IS_WINDOWS)
 		set_target_properties(${ALIB} PROPERTIES VERSION ${BOOSTER_SOVERSION} SOVERSION ${BOOSTER_SOVERSION})
 	else()
@@ -730,5 +730,3 @@ install(TARGETS ${LINK_LIBS}
 	LIBRARY DESTINATION ${LIBDIR}
 	ARCHIVE DESTINATION ${LIBDIR}
 	PUBLIC_HEADER DESTINATION include/booster)
-
-

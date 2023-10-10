@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.2)
 set(CMAKE_LEGACY_CYGWIN_WIN32 0)
 
 
@@ -47,7 +47,7 @@ option(DISABLE_TCPCACHE		"Disable distributed cache beckend" OFF)
 option(DISABLE_GZIP		"Disable support of gzip output compression" OFF)
 option(USE_STLPORT		"Build with STLPort library" OFF)
 
-if(USE_STLPORT) 
+if(USE_STLPORT)
 	find_path(STLPORT_INCLUDE stlport/iostream)
 	find_library(STLPORT_LIB stlport)
 	if(NOT STLPORT_INCLUDE OR NOT STLPORT_LIB)
@@ -134,7 +134,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
 	set(CXX_FLAGS "-Wall -std=c++17")
 	set(C_FLAGS "-Wall")
-elseif(MSVC) 
+elseif(MSVC)
     # To be defined MSVC 2017 supports c++14 by default so no need to specify
     # older version seems not to support /std flag... so keep it as it is
 	set(CXX_FLAGS "/EHsc /W3")
@@ -168,12 +168,12 @@ if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
 endif()
 
 check_cxx_source_compiles(
-	"#include <stdint.h> 
+	"#include <stdint.h>
 	int main(){int32_t x; int64_t y; return 0; }"
 	CPPCMS_HAVE_STDINT_H)
 
 check_cxx_source_compiles(
-	"#include <inttypes.h> 
+	"#include <inttypes.h>
 	int main(){int32_t x; int64_t y; return 0; }"
 	CPPCMS_HAVE_INTTYPES_H)
 
@@ -192,37 +192,37 @@ set(CPPCMS_LIBRARY_PREFIX ${CMAKE_SHARED_LIBRARY_PREFIX})
 
 
 check_cxx_source_compiles(
-	"#include <string> 
+	"#include <string>
 	int main() { std::wstring s; }"
 	CPPCMS_HAVE_STD_WSTRING)
 
 check_cxx_source_compiles(
-	"#include <time.h> 
+	"#include <time.h>
 	int main() { struct tm t; char const *p=t.tm_zone; long o=t.tm_gmtoff; }"
 	CPPCMS_HAVE_BSD_TM)
 
 check_cxx_source_compiles(
-	"#include <string> 
+	"#include <string>
 	int main() { std::u16string s16; std::u32string s32; }"
 	CPPCMS_HAVE_CPP0X_UXSTRING)
 
 check_cxx_source_compiles(
-	"#include <list> 
+	"#include <list>
 	int main(){std::list<int> l; auto p=l.begin();}"
 	CPPCMS_HAVE_CPP_0X_AUTO)
 
 check_cxx_source_compiles(
-	"#include <list> 
+	"#include <list>
 	int main(){std::list<int> l; decltype(l.begin()) p=l.begin();}"
 	CPPCMS_HAVE_CPP_0X_DECLTYPE)
 
 check_cxx_source_compiles(
-	"#include <list> 
+	"#include <list>
 	int main(){std::list<int> l; typeof(l.begin()) p=l.begin();}"
 	CPPCMS_HAVE_GCC_TYPEOF)
 
 check_cxx_source_compiles(
-	"#include <list> 
+	"#include <list>
 	int main(){std::list<int> l; __typeof__(l.begin()) p=l.begin();}"
 	CPPCMS_HAVE_UNDERSCORE_TYPEOF)
 check_cxx_source_compiles(
@@ -270,7 +270,7 @@ else()
 			find_library(LIB_DL dl)
 		endif(NOT CPPCMS_HAVE_LIB_DL)
 	endif(NOT CPPCMS_HAVE_DLOPEN)
-	
+
 	check_function_exists(socket CPPCMS_HAVE_SOCKET)
 	if(NOT CPPCMS_HAVE_SOCKET)
 		check_library_exists(socket socket "" CPPCMS_HAVE_LIB_SOCKET)
@@ -293,7 +293,7 @@ else()
 			endif(NOT CPPCMS_HAVE_LIB_NSL)
 		endif(NOT LIB_SOCKGETHOSTBYNAME)
 	endif(NOT CPPCMS_HAVE_GETHOSTBYNAME)
-endif() 
+endif()
 
 
 check_function_exists(canonicalize_file_name CPPCMS_HAVE_CANONICALIZE_FILE_NAME)
@@ -332,31 +332,31 @@ endif()
 set(CPPCMS_PUBLIC_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/cppcms/config.h)
 
 
-set(CPPCMS_SOURCES 
-	src/service.cpp 
-	src/cgi_api.cpp 
-	src/http_request.cpp 
-	src/http_response.cpp 
-	src/http_context.cpp 
-	src/cppcms_error.cpp 
-	src/cppcms_error_category.cpp 
-	src/thread_pool.cpp 
-	src/applications_pool.cpp 
-	src/application.cpp 
-	src/url_dispatcher.cpp 
-	src/url_mapper.cpp 
-	src/http_cookie.cpp  
-	src/http_file.cpp  
+set(CPPCMS_SOURCES
+	src/service.cpp
+	src/cgi_api.cpp
+	src/http_request.cpp
+	src/http_response.cpp
+	src/http_context.cpp
+	src/cppcms_error.cpp
+	src/cppcms_error_category.cpp
+	src/thread_pool.cpp
+	src/applications_pool.cpp
+	src/application.cpp
+	src/url_dispatcher.cpp
+	src/url_mapper.cpp
+	src/http_cookie.cpp
+	src/http_file.cpp
 	src/http_content_type.cpp
-	src/util.cpp 
-	src/base64.cpp 
-	src/base_view.cpp 
-	src/base_content.cpp 
+	src/util.cpp
+	src/base64.cpp
+	src/base_view.cpp
+	src/base_content.cpp
 	src/views_pool.cpp
-	src/internal_file_server.cpp 
-	src/json.cpp 
-	src/encoding.cpp 
-	src/form.cpp 
+	src/internal_file_server.cpp
+	src/json.cpp
+	src/encoding.cpp
+	src/form.cpp
 	src/filters.cpp
 	src/cache_pool.cpp
 	src/cache_interface.cpp
@@ -437,7 +437,7 @@ if(NOT DISABLE_HTTP)
 	set(CPPCMS_SOURCES ${CPPCMS_SOURCES} src/http_api.cpp)
 	set(CPPCMS_HAS_HTTP 1)
 endif()
-	
+
 
 if(WINDOWS_NATIVE)
 	set(CPPCMS_SOURCES ${CPPCMS_SOURCES} src/session_win32_file_storage.cpp)
@@ -474,11 +474,11 @@ foreach(ALIB ${CPPCMS_LIBS})
 	if(LIB_CRYPT)
 		target_link_libraries(${ALIB} ${LIB_CRYPT})
 	endif(LIB_CRYPT)
-	
+
 	if(WS2_32 AND WSOCK32)
 		target_link_libraries(${ALIB} ${WS2_32})
 		target_link_libraries(${ALIB} ${WSOCK32})
-	endif(WS2_32 AND WSOCK32) 
+	endif(WS2_32 AND WSOCK32)
 
 	if(LIB_SOCKGETHOSTBYNAME)
 		target_link_libraries(${ALIB} ${LIB_SOCKGETHOSTBYNAME})
@@ -490,7 +490,7 @@ foreach(ALIB ${CPPCMS_LIBS})
 	if(LIB_SOCKET)
 		target_link_libraries(${ALIB} ${LIB_SOCKET})
 	endif(LIB_SOCKET)
-	
+
 	if(LIB_DL)
 		target_link_libraries(${ALIB} ${LIB_DL})
 	endif(LIB_DL)
@@ -515,105 +515,105 @@ endif(NOT PYTHON)
 
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/skin1.cpp
-	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
-		-s skin1 
-		-o ${CMAKE_CURRENT_BINARY_DIR}/skin1.cpp 
-			${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_skin1.tmpl 
+	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
+		-s skin1
+		-o ${CMAKE_CURRENT_BINARY_DIR}/skin1.cpp
+			${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_skin1.tmpl
 			${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_view1.tmpl
-	DEPENDS 
-		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
-		${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_skin1.tmpl 
+	DEPENDS
+		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
+		${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_skin1.tmpl
 		${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_view1.tmpl)
 
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/skin2.cpp
-	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
-		-s skin2 
-		-o ${CMAKE_CURRENT_BINARY_DIR}/skin2.cpp 
-			${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_skin2.tmpl 
+	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
+		-s skin2
+		-o ${CMAKE_CURRENT_BINARY_DIR}/skin2.cpp
+			${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_skin2.tmpl
 			${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_view1.tmpl
-	DEPENDS 
-		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
-		${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_skin2.tmpl 
+	DEPENDS
+		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
+		${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_skin2.tmpl
 		${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_view1.tmpl)
 
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tc_skin_a.cpp
-	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
-		-o ${CMAKE_CURRENT_BINARY_DIR}/tc_skin_a.cpp 
+	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
+		-o ${CMAKE_CURRENT_BINARY_DIR}/tc_skin_a.cpp
 			${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_skin_a.tmpl
-	DEPENDS 
-		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
+	DEPENDS
+		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_skin_a.tmpl)
 
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tc_skin_b.cpp
-	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
-		-o ${CMAKE_CURRENT_BINARY_DIR}/tc_skin_b.cpp 
+	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
+		-o ${CMAKE_CURRENT_BINARY_DIR}/tc_skin_b.cpp
 			${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_skin_b.tmpl
-	DEPENDS 
-		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
+	DEPENDS
+		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_skin_b.tmpl)
 
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tc_skin.cpp
-	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
-		-o ${CMAKE_CURRENT_BINARY_DIR}/tc_skin.cpp 
+	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
+		-o ${CMAKE_CURRENT_BINARY_DIR}/tc_skin.cpp
 			${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_skin.tmpl
-	DEPENDS 
-		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
+	DEPENDS
+		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_skin.tmpl)
 
 
 
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tc_sep_skin_a.cpp ${CMAKE_CURRENT_BINARY_DIR}/tc_sep_skin_a.h
-	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
+	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
 		-o ${CMAKE_CURRENT_BINARY_DIR}/tc_sep_skin_a.cpp -H ${CMAKE_CURRENT_BINARY_DIR}/tc_sep_skin_a.h
 			${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_skin_a.tmpl
-	DEPENDS 
-		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
+	DEPENDS
+		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_skin_a.tmpl)
 
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tc_sep_skin_b.cpp ${CMAKE_CURRENT_BINARY_DIR}/tc_sep_skin_b.h
-	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
+	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
 		-o ${CMAKE_CURRENT_BINARY_DIR}/tc_sep_skin_b.cpp -H ${CMAKE_CURRENT_BINARY_DIR}/tc_sep_skin_b.h
 			${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_skin_b.tmpl
-	DEPENDS 
-		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
+	DEPENDS
+		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_skin_b.tmpl)
 
 add_custom_command(
 	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tc_sep_skin.cpp ${CMAKE_CURRENT_BINARY_DIR}/tc_sep_skin.h
-	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
+	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
 		-o ${CMAKE_CURRENT_BINARY_DIR}/tc_sep_skin.cpp -H ${CMAKE_CURRENT_BINARY_DIR}/tc_sep_skin.h
 			${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_skin.tmpl
-	DEPENDS 
-		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
+	DEPENDS
+		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_skin.tmpl)
 
 add_custom_command(
-	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tc_plugin.cpp 
-	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
+	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tc_plugin.cpp
+	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
 		-o ${CMAKE_CURRENT_BINARY_DIR}/tc_plugin.cpp
 			${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_plugin.tmpl
-	DEPENDS 
+	DEPENDS
 		${CMAKE_CURRENT_BINARY_DIR}/tc_sep_skin.h
-		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
+		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_skin.tmpl
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_plugin.tmpl
 		)
 
 
 add_custom_command(
-	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tc_plugin2.cpp 
-	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
+	OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/tc_plugin2.cpp
+	COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
 		-o ${CMAKE_CURRENT_BINARY_DIR}/tc_plugin2.cpp
 			${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_plugin2.tmpl
-	DEPENDS 
+	DEPENDS
 		${CMAKE_CURRENT_BINARY_DIR}/tc_sep_skin.h
-		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
+		${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_skin.tmpl
 		${CMAKE_CURRENT_SOURCE_DIR}/tests/tc_plugin2.tmpl
 		)
@@ -626,14 +626,14 @@ add_custom_command(
 if(NOT DISABLE_SHARED)
 	add_custom_command(
 		OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/skin3.cpp
-		COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
-			-s skin3 
-			-o ${CMAKE_CURRENT_BINARY_DIR}/skin3.cpp 
-				${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_skin2.tmpl 
+		COMMAND ${PYTHON} ${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
+			-s skin3
+			-o ${CMAKE_CURRENT_BINARY_DIR}/skin3.cpp
+				${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_skin2.tmpl
 				${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_view1.tmpl
-		DEPENDS 
-			${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc 
-			${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_skin2.tmpl 
+		DEPENDS
+			${CMAKE_CURRENT_SOURCE_DIR}/bin/cppcms_tmpl_cc
+			${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_skin2.tmpl
 			${CMAKE_CURRENT_SOURCE_DIR}/src/hello_world_view1.tmpl)
 	add_library(skin3 SHARED skin3.cpp)
 	set(SKIN3_DEFS DLL_EXPORT)
@@ -687,7 +687,7 @@ endif(DISABLE_SHARED)
 # Tests
 #########################################
 
-set(ALL_TESTS 
+set(ALL_TESTS
 	form_test
 	proto_test
 	pool_test
@@ -730,7 +730,7 @@ if(NOT DISABLE_TCPCACHE)
 endif()
 
 if(NOT DISABLE_SHARED)
-	set(ALL_TESTS ${ALL_TESTS} 
+	set(ALL_TESTS ${ALL_TESTS}
 		tc_test
 		loadable_storage_test
 		)
@@ -770,9 +770,9 @@ else()
 	set_target_properties(${CPPCMS_LIBS} PROPERTIES VERSION ${CPPCMS_VERSION} SOVERSION ${CPPCMS_SOVERSION})
 endif()
 
-set_target_properties(${CPPCMS_LIBS} PROPERTIES 
+set_target_properties(${CPPCMS_LIBS} PROPERTIES
 			PUBLIC_HEADER "${CPPCMS_PUBLIC_HEADERS}")
-			
+
 if(MSVC AND NOT DISABLE_STATIC)
 	set_target_properties(cppcms-static PROPERTIES PREFIX "lib")
 endif(MSVC AND NOT DISABLE_STATIC)
@@ -789,7 +789,7 @@ endif()
 #################
 
 
-install(TARGETS ${CPPCMS_INSTALL_TARGETS} 
+install(TARGETS ${CPPCMS_INSTALL_TARGETS}
 	RUNTIME DESTINATION bin
 	LIBRARY DESTINATION ${LIBDIR}
 	ARCHIVE DESTINATION ${LIBDIR}
@@ -804,7 +804,7 @@ install(DIRECTORY cppcms DESTINATION include
 #############
 # TESTS
 #############
-		
+
 
 
 set(CNF "${CMAKE_CURRENT_SOURCE_DIR}/tests")
@@ -839,15 +839,15 @@ if(NOT DISABLE_SHARED)
 endif()
 
 add_test(status_test
-	status_test "-c" "${CNF}/status_test.js" 
+	status_test "-c" "${CNF}/status_test.js"
 	"--test-exec=${PYTHON} ${CNF}/status_test.py")
 
 add_test(pool_test
-	pool_test "-c" "${CNF}/pool_test.js" 
+	pool_test "-c" "${CNF}/pool_test.js"
 	"--test-exec=${PYTHON} ${CNF}/pool_test.py")
 
 add_test(filter_test
-	filter_test "-c" "${CNF}/filter_test.js" 
+	filter_test "-c" "${CNF}/filter_test.js"
 	"--test-exec=${PYTHON} ${CNF}/filter_test.py")
 
 add_test(async_status_test
@@ -855,21 +855,21 @@ add_test(async_status_test
 	"--test-exec=${PYTHON} ${CNF}/status_test.py async")
 
 add_test(form_test
-	form_test "-c" "${CNF}/form_test.js" 
+	form_test "-c" "${CNF}/form_test.js"
 	"--test-exec=${PYTHON} ${CNF}/form_test.py")
 
 add_test(cookie_test
-	cookie_test "-c" "${CNF}/cookie_test.js" 
+	cookie_test "-c" "${CNF}/cookie_test.js"
 	"--test-exec=${PYTHON} ${CNF}/cookie_test.py")
 
 
-add_test(internal_forwarder_test 
-	forwarder_test "-c" "${CNF}/forwarder_test.js" 
+add_test(internal_forwarder_test
+	forwarder_test "-c" "${CNF}/forwarder_test.js"
 	"--test-exec=${PYTHON} ${CNF}/forwarder_test.py"
 	"--test-internal=true")
 
 add_test(forwarder_test
-	forwarder_test "-c" "${CNF}/forwarder_test.js" 
+	forwarder_test "-c" "${CNF}/forwarder_test.js"
 	"--test-exec=${PYTHON} ${CNF}/forwarder_test.py"
 	"--test-internal=false")
 
@@ -878,7 +878,7 @@ add_test(jsonrpc_test
 	"--test-exec=${PYTHON} ${CNF}/jsonrpc_test.py")
 
 add_test(http_timeouts_test_read
-	http_timeouts_test "-c" "${CNF}/proto_test.js" 
+	http_timeouts_test "-c" "${CNF}/proto_test.js"
 	"--service-api=http" "--service-port=8080" "--service-ip=127.0.0.1" "--http-timeout=5" "--logging-level=debug"
 	"--test-write=false"
 	"--test-exec=${PYTHON} ${CNF}/http_timeouts_test.py read")
@@ -896,26 +896,26 @@ add_test(http_timeouts_test_read
 set(HTTP_TIMEOUT 15)
 
 add_test(http_timeouts_test_write
-	http_timeouts_test "-c" "${CNF}/proto_test.js" 
+	http_timeouts_test "-c" "${CNF}/proto_test.js"
 	"--service-api=http" "--service-port=8080" "--service-ip=127.0.0.1" "--http-timeout=${HTTP_TIMEOUT}" "--logging-level=debug" "--service-sndbuf=32786" "--service-rcvbuf=32768"
 	"--test-write=true"
 	"--test-exec=${PYTHON} ${CNF}/http_timeouts_test.py write ${HTTP_TIMEOUT}")
 
 
 add_test(file_server_test
-	file_server_test "-c" "${CNF}/file_server_test.js" 
+	file_server_test "-c" "${CNF}/file_server_test.js"
 	"--test-exec=${PYTHON} ${CNF}/file_server_test.py"
 	"-U" "${CNF}"
 	)
 
 add_test(file_server_test_no_links
-	file_server_test "-c" "${CNF}/file_server_test.js" "--file_server-check_symlink=false" 
+	file_server_test "-c" "${CNF}/file_server_test.js" "--file_server-check_symlink=false"
 	"--test-exec=${PYTHON} ${CNF}/file_server_test.py no_links"
 	"-U" "${CNF}"
 	)
 
 add_test(file_server_with_listing_test
-	file_server_test "-c" "${CNF}/file_server_test.js" 
+	file_server_test "-c" "${CNF}/file_server_test.js"
 	"--file_server-listing=true"
 	"--test-exec=${PYTHON} ${CNF}/file_server_test.py listing"
 	"-U" "${CNF}"
@@ -930,47 +930,47 @@ add_test(file_server_test_async
 	)
 
 add_test(file_server_test_no_links_async
-	file_server_test "-c" "${CNF}/file_server_test.js" "--file_server-check_symlink=false" "--file_server-async=true" 
+	file_server_test "-c" "${CNF}/file_server_test.js" "--file_server-check_symlink=false" "--file_server-async=true"
 	"--test-exec=${PYTHON} ${CNF}/file_server_test.py no_links"
 	"-U" "${CNF}"
 	)
 
 add_test(file_server_with_listing_test_async
-	file_server_test "-c" "${CNF}/file_server_test.js" "--file_server-async=true" 
+	file_server_test "-c" "${CNF}/file_server_test.js" "--file_server-async=true"
 	"--file_server-listing=true"
 	"--test-exec=${PYTHON} ${CNF}/file_server_test.py listing"
 	"-U" "${CNF}"
 	)
 
-add_test(disco_test_http 
-	disco_test "-c" "${CNF}/proto_test.js" 
+add_test(disco_test_http
+	disco_test "-c" "${CNF}/proto_test.js"
 	"--service-api=http" "--service-port=8080" "--service-ip=127.0.0.1"
 	"--test-exec=${PYTHON} ${CNF}/disco_test.py http")
 
-add_test(disco_test_fastcgi_tcp 
-	disco_test "-c" "${CNF}/proto_test.js" 
+add_test(disco_test_fastcgi_tcp
+	disco_test "-c" "${CNF}/proto_test.js"
 	"--service-api=fastcgi" "--service-port=8080" "--service-ip=127.0.0.1"
 	"--test-exec=${PYTHON} ${CNF}/disco_test.py fastcgi_tcp")
 
-add_test(disco_test_scgi_tcp 
-	disco_test "-c" "${CNF}/proto_test.js" 
+add_test(disco_test_scgi_tcp
+	disco_test "-c" "${CNF}/proto_test.js"
 	"--service-api=scgi" "--service-port=8080" "--service-ip=127.0.0.1"
 	"--test-exec=${PYTHON} ${CNF}/disco_test.py scgi_tcp")
 
 add_test(secure_post_test
-	secure_post_test "-c" "${CNF}/secure_post_test.js" 
+	secure_post_test "-c" "${CNF}/secure_post_test.js"
 	"--test-exec=${PYTHON} ${CNF}/secure_post_test.py"
 	)
 
 
 if(NOT IS_WINDOWS)
-	add_test(disco_test_fastcgi_unix 
-		disco_test "-c" "${CNF}/proto_test.js" 
+	add_test(disco_test_fastcgi_unix
+		disco_test "-c" "${CNF}/proto_test.js"
 		"--service-api=fastcgi" "--service-socket=/tmp/cppcms_test_socket"
 		"--test-exec=${PYTHON} ${CNF}/disco_test.py fastcgi_unix")
 
-	add_test(disco_test_scgi_unix 
-		disco_test "-c" "${CNF}/proto_test.js" 
+	add_test(disco_test_scgi_unix
+		disco_test "-c" "${CNF}/proto_test.js"
 		"--service-api=scgi" "--service-socket=/tmp/cppcms_test_socket"
 		"--test-exec=${PYTHON} ${CNF}/disco_test.py scgi_unix")
 endif()
@@ -1003,25 +1003,25 @@ foreach(LOC client server both)
 endforeach()
 
 foreach(TYPE async sync nonblocking)
-	add_test(proto_test_${TYPE}_http 
-		proto_test "-c" "${CNF}/proto_test.js" 
+	add_test(proto_test_${TYPE}_http
+		proto_test "-c" "${CNF}/proto_test.js"
 		"--test-async=${TYPE}" "--service-api=http" "--service-port=8080" "--service-ip=127.0.0.1"
 		"--test-exec=${PYTHON} ${CNF}/proto_test.py http")
-	add_test(proto_test_${TYPE}_scgi 
-		proto_test "-c" "${CNF}/proto_test.js" 
+	add_test(proto_test_${TYPE}_scgi
+		proto_test "-c" "${CNF}/proto_test.js"
 		"--test-async=${TYPE}" "--service-api=scgi" "--service-port=8080" "--service-ip=127.0.0.1"
 		"--test-exec=${PYTHON} ${CNF}/proto_test.py scgi_tcp")
-	add_test(proto_test_${TYPE}_fastcgi 
-		proto_test "-c" "${CNF}/proto_test.js" 
+	add_test(proto_test_${TYPE}_fastcgi
+		proto_test "-c" "${CNF}/proto_test.js"
 		"--test-async=${TYPE}" "--service-api=fastcgi" "--service-port=8080" "--service-ip=127.0.0.1"
 		"--test-exec=${PYTHON} ${CNF}/proto_test.py fastcgi_tcp")
 	if(NOT IS_WINDOWS)
 		add_test(proto_test_${TYPE}_scgi_unix
-			proto_test "-c" "${CNF}/proto_test.js" 
+			proto_test "-c" "${CNF}/proto_test.js"
 			"--test-async=${TYPE}" "--service-api=scgi" "--service-socket=/tmp/cppcms_test_socket"
 			"--test-exec=${PYTHON} ${CNF}/proto_test.py scgi_unix")
 		add_test(proto_test_${TYPE}_fastcgi_unix
-			proto_test "-c" "${CNF}/proto_test.js" 
+			proto_test "-c" "${CNF}/proto_test.js"
 			"--test-async=${TYPE}" "--service-api=fastcgi" "--service-socket=/tmp/cppcms_test_socket"
 			"--test-exec=${PYTHON} ${CNF}/proto_test.py fastcgi_unix")
 	endif()
@@ -1033,7 +1033,7 @@ if(NOT DISABLE_SHARED)
 	if(WIN32 OR CYGWIN)
 		set_target_properties(loadable_storage PROPERTIES COMPILE_DEFINITIONS DLL_EXPORT)
 	endif()
-	add_test(loadable_storage_pass 
+	add_test(loadable_storage_pass
 		loadable_storage_test
 		--service-api=http
 		--session-location=server
@@ -1057,8 +1057,8 @@ endif()
 
 
 set(TESTS_WITH_TIMEOUT
-	forwarder_test 
-	jsonrpc_test 
+	forwarder_test
+	jsonrpc_test
 	proto_test_sync_http
 	proto_test_async_http
 	proto_test_sync_scgi
@@ -1068,7 +1068,7 @@ if(NOT DISABLE_TCPCACHE)
 	set(TESTS_WITH_TIMEOUT ${TESTS_WITH_TIMEOUT} cache_backend_test)
 endif()
 
-set_tests_properties( 
+set_tests_properties(
 	${TESTS_WITH_TIMEOUT}
 	PROPERTIES TIMEOUT 180)
 
@@ -1079,5 +1079,3 @@ if(NOT IS_WINDOWS)
 		PROPERTIES TIMEOUT 180)
 
 endif()
-
-
